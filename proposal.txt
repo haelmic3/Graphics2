@@ -3,3 +3,20 @@ Michael Moran
 
 
 Virtual File exploration
+
+I  would like to make the digital world a little more physical.
+The ability to open every file and have them persist in view.
+
+
+walkthrough
+
+open to the room with single point of interest a file list off a little bit
+away. Always there in that location in the room as the rock of the simulation.
+Selecting a folder pulls a folder into your hand.
+throwing the folder opens the contents automaticly or files can be cycled
+through.
+Droping the folder closes everything and the folder can be placed to keep it
+open and do something else.
+
+The program should be able to open text and images with the posibility that it
+might be able to open particular datastructures
