@@ -19,4 +19,4 @@ Droping the folder closes everything and the folder can be placed to keep it
 open and do something else.
 
 The program should be able to open text and images with the posibility that it
-might be able to open particular datastructures
+might be able to open particular types of structured data. 
