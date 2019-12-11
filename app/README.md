@@ -26,7 +26,7 @@ To run the node service insure you have node installed.
 Check https://nodejs.org for instalation information.
 Once node is installed running the server shoud be as simple as the following command.
 
-node node.js
+    node node.js
 
 The file instructs a socket to be opened at http://127.0.0.1:3000/
 
