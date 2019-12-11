@@ -38,8 +38,8 @@ FILEMANAGER.process = function()
     };
     f.list = f.list.concat(struct);
   }
-
-  if(file.type.includes("image\/")||file.type.includes("video\/"))
+  if(!file){}
+  else if(file.type.includes("image\/")||file.type.includes("video\/"))
   {
       //.match(/image\/.*/))
       //.match(/video\/.*/))

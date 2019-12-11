@@ -61,7 +61,7 @@ var camera = {
   {
     schema:{},
     init:function(){
-      this.pulse = 45;
+      this.pulse = 90;
       this.inc = 0;
       this.assets = this.el.querySelector("a-assets");
       this.growFileListTo(2);
@@ -87,10 +87,24 @@ var camera = {
     {
       const f = FILEMANAGER;
       const index = this.inc/this.pulse;
-      if(f.list.length>index&&f.list[index].loaded)
+      if(f.filelist.length&&f.list.length>index&&f.list[index].loaded)
       {
+        var position = xzseedy(
+          /*y:*/Math.pow(this.inc/this.pulse,.5)/2 - 1,
+          /*number:*/((this.inc/this.pulse) + 2),
+          /*scale*/1,
+          /*power*/2/3,
+          ///*growth*/.0625
+        );
         var file = f.list[index];
         var b = document.createElement("a-box");
+        b.setAttribute("event-set__mouseenter","scale: 1.2 1.2 1");
+        b.setAttribute("event-set__mouseleave","scale: 1 1 1");
+        b.setAttribute("event-set__click","_target: #camera; _delay: 100; "+
+          "position: "+position.x+
+          " "+position.y+
+          " "+position.z+
+          "");
         if(file.type.includes("image\/")){
           var img = document.createElement("img");
           img.id = "a"+this.count;
@@ -113,13 +127,8 @@ var camera = {
           b .setAttribute("material", {color: "#E87359"});
         }
         b .setAttribute("position",
-          xzseedy(
-          /*y:*/Math.pow(this.inc/this.pulse,.5)/2 - 1,
-          /*number:*/((this.inc/this.pulse) + 2),
-          /*scale*/1,
-          /*power*/2/3,
-          ///*growth*/.0625
-        ));
+          position
+        );
         b .setAttribute("scale", {x:1,y:1,z:1});
         this.el.appendChild(b);
         this.count++;
@@ -211,8 +220,11 @@ var camera = {
 </script>
 </head>
 <body>
+<!--- -------------------------------------------------------------------- -->
+
 <button onclick="start()">Start</button>
-<input id="file" type="file" onchange="FILEMANAGER.setFileList(this)" multiple webkitdirectory/>
+<input id="file" type="file" onchange="FILEMANAGER.setFileList(this)"
+ multiple webkitdirectory/>
 <button onclick="test()">Test</button>
 <!--button onclick="testAll()">TestAll</button-->
 <div id="test"></div>
@@ -306,7 +318,7 @@ document.body.insertAdjacentHTML("beforeend",'\
   <!--a-sky src="#default" radius="10"></a-sky-->\n\
   <a-box position="0 0 0" scale="1 1 1" color="red"></a-box>\n\
   <canvas class="a-canvas a-grab-cursor" data-aframe-canvas="true"></canvas>\n\
-  <a-camera shift-space-wasd="" look-controls="" wasd-controls="" position="0 1.6 0">\n\
+  <a-camera id="camera" shift-space-wasd="" look-controls="" wasd-controls="" position="0 1.6 0">\n\
     <a-cursor\n\
       id="cursor"\n\
       color="white"\n\
