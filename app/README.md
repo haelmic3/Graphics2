@@ -5,7 +5,7 @@ Author: Michael Moran
 Be advised this application is not finished yet
 ===============================================
 
-# The files
+## The files
 
 Included is the following
 
@@ -20,7 +20,7 @@ will fail in some cases when run locally.
 Due to this a helpful script `node.js' is provided.
 If you exicute this from a fileserver node.js is not requred.
 
-# Running with NodeJS
+## Running with NodeJS
 
 To run the node service insure you have node installed.
 Check https://nodejs.org for instalation information.
@@ -34,7 +34,7 @@ Should this socket already be in use feel free to modify the address,
 This server script was not designed for anything but this application
 and should not be opened to the internet.
 
-# Using the application
+## Using the application
 
 Once the application is running on a server opening the url in a vr supported browser
 
