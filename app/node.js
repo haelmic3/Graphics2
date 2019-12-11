@@ -17,24 +17,17 @@ const server = http.createServer((req, res) => {
       console.log(filename);
       var file = fs.readFileSync(filename);
       res.statusCode = 200;
-      switch(req.url.split('.')[1])
-      {
-      case 'html':
+      if(filename.includes('.html')){
         res.setHeader('Content-Type', 'text/html');
-        break;
-      case 'css':
+      }else if(filename.includes('.css')){
         res.setHeader('Content-Type', 'text/css');
-        break;
-      case 'js':
+      }else if(filename.includes('.js')){
         res.setHeader('Content-Type', 'text/javascript');
-        break;
-      case 'jpg':
+      }else if(filename.includes('.jpg')){
         res.setHeader('Content-Type', 'image/jpeg');
-        break;
-      case 'ogg':
+      }else if(filename.includes('.ogg')){
         res.setHeader('Content-Type', 'audio/vorbis');
-        break;
-      default:
+      }else{
         res.setHeader('Content-Type', 'application/octet-stream');
       }
       res.end(file);

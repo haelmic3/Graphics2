@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+<script src="file.manager.js"></script>
 <script>
 "use strict";
 
@@ -62,6 +63,9 @@ var camera = {
     init:function(){
       this.pulse = 45;
       this.inc = 0;
+      this.assets = this.el.querySelector("a-assets");
+      this.growFileListTo(2);
+      this.count = 0;
       this.next();
     },
     tick:function(){
@@ -69,6 +73,11 @@ var camera = {
     },
     tock:function()
     {
+      const f = FILEMANAGER;
+      if(f.filelist.length>f.index)
+      {
+        if(1+this.inc/this.pulse>f.list.length)f.process();
+      }
       if(this.inc%this.pulse==0)
       {
         this.next();
@@ -76,18 +85,56 @@ var camera = {
     },
     next:function()
     {
-      var b = document.createElement("a-box");
-      b .setAttribute("material", {color: "#E87359"});
-      b .setAttribute("position",
-        xzseedy(
+      const f = FILEMANAGER;
+      const index = this.inc/this.pulse;
+      if(f.list.length>index&&f.list[index].loaded)
+      {
+        var file = f.list[index];
+        var b = document.createElement("a-box");
+        if(file.type.includes("image\/")){
+          var img = document.createElement("img");
+          img.id = "a"+this.count;
+          img.crossorigin="anonymous";
+          img.src = file.url;
+          
+          this.assets.appendChild(img);
+          b .setAttribute("material", {src: "#a"+this.count});
+        }
+        else if(file.type.includes("video\/")){
+          var vid = document.createElement("video");
+          vid.id = "a"+this.count;
+          vid.crossorigin="anonymous";
+          vid.src = file.url;
+          
+          this.assets.appendChild(vid);
+          b .setAttribute("material", {src: "#a"+this.count});
+        }
+        else{
+          b .setAttribute("material", {color: "#E87359"});
+        }
+        b .setAttribute("position",
+          xzseedy(
           /*y:*/Math.pow(this.inc/this.pulse,.5)/2 - 1,
           /*number:*/((this.inc/this.pulse) + 2),
           /*scale*/1,
           /*power*/2/3,
           ///*growth*/.0625
         ));
-      b .setAttribute("scale", {x:1,y:1,z:1});
-      this.el.appendChild(b);
+        b .setAttribute("scale", {x:1,y:1,z:1});
+        this.el.appendChild(b);
+        this.count++;
+      }else{
+        this.inc-=this.pulse;
+        // TODO handle when end of the list is reached.
+      }
+    },
+    growFileListTo:function(n){
+      const f = FILEMANAGER;
+      if(f.list.length < n && f.index < f.filelist.length)
+      {
+        let t = f.list.length - n
+        for(var i = 0; i < t;i++)FILEMANAGER.process();
+      }
     },
   }
 ],
@@ -165,7 +212,90 @@ var camera = {
 </head>
 <body>
 <button onclick="start()">Start</button>
+<input id="file" type="file" onchange="FILEMANAGER.setFileList(this)" multiple webkitdirectory/>
+<button onclick="test()">Test</button>
+<!--button onclick="testAll()">TestAll</button-->
+<div id="test"></div>
 <script>"use strict";
+FILEMANAGER.setFileList(document.getElementById("file"));
+function openInElement(file,element, failures=0){
+  if (!file){
+    "Error in file processing:";
+  }
+  else if(!file.loaded){
+    if(falures<3)
+    {
+      
+    }
+    else{
+          element. insertAdjacentHTML
+          (       'beforeend',
+                  '<span class="item">['
+                   +file.name
+                   +'] failed to load in a reasonable time frame.</span>'
+                   
+          )
+      
+    }
+  }
+  else if (file.type.includes("image\/"))
+                  //.match(/image\/.*/))
+    element.insertAdjacentHTML
+    (     'beforeend',
+          '<img src="'
+          +       file.url
+          +       '" alt="['
+          +       file.type
+          +       ' '
+          +       file.name
+          +       '], "/>'
+    );
+  else if (file.type.includes("video\/"))
+                  //.match(/video\/.*/))
+    element. insertAdjacentHTML
+    (     'beforeend',
+          '<video controls><source src="'
+          +       file.url
+          +       '" type="'
+          +       file.type
+          +       '"/></video>'
+  );
+  else if
+  (file.type==""||file.type.includes("text\/"))
+  {
+          let span = document
+                  .createElement("span");
+          let att = document
+                  .createAttribute("class");
+          att.value="item";
+          span.setAttributeNode(att);
+          element.appendChild(span);
+          span.appendChild(document.createTextNode(file.text));
+  }
+  else
+  {
+          element. insertAdjacentHTML
+          (       'beforeend',
+                  '<span class="item">['
+                  +       file.type
+                  +       ' '
+                  +       file.name
+                  +       '], </span>'
+          );
+          //cont = true;
+  }
+}
+function test(){
+  const main = document.getElementById("test");
+  const f = FILEMANAGER;
+  f.process();
+  setTimeout(function(){
+    var file = f.list[f.list.length-1];
+    openInElement(file,main);
+  },100);
+}
+function testAll(){
+}
 function start(){
 document.body.removeChild(document.getElementsByTagName("button")[0]);
 document.body.insertAdjacentHTML("beforeend",'\
