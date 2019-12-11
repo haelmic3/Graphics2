@@ -32,7 +32,7 @@ The file instructs a socket to be opened at http://127.0.0.1:3000/
 
 Should this socket already be in use feel free to modify the address,
 This server script was not designed for anything but this application
-and should not be provided an ip opened to the internet.
+and should not be provided an ip opened to the the www.
 
 ## Using the application
 
