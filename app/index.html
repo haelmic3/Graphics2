@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+<script>
+"use strict";
+
+function xzseedy(y,n,s=1,p=0.5,g=1.618033988749895,c=1,a=0)
+{
+	n=n|0.0;  // n is a float
+	return {
+		x:-(Math.pow(n,p)*s+c)*Math.cos(Math.PI*2.0*n*g)+a
+	,
+                y:y
+	,
+		z:-(Math.pow(n,p)*s+c)*Math.sin(Math.PI*2.0*n*g)+a
+	};
+}
+function load(uri,callback)
+{
+	x = new XMLHttpRequest();
+	x.open("GET",uri);
+	x.responseType = "blob";
+	x.onreadystatechange=function()
+	{
+		if(x.readyState === 4 && x.status === 200)
+		{
+			callback(x.response);
+		}
+	}
+	x.send();
+}
+var camera = {
+  maxVelocity:2,
+};
+(function (list){
+  for(var i of list){
+    AFRAME.registerComponent(i[0],i[1]);
+  }
+})([
+[
+  'log', // attribute name
+  {
+    schema: {type: 'string'}, // attribute value, constructor like
+
+    init: function () { // constructor
+      var sData = this.data;
+      var sEl = this.el;
+      console.log(sData);
+    }
+    // update  // 
+    // remove  // 
+    // tick    // before draw call
+    // tock    // after all draw calls
+  }
+],
+[
+  'filesystem',
+  {
+    schema:{},
+    init:function(){
+      this.pulse = 45;
+      this.inc = 0;
+      this.next();
+    },
+    tick:function(){
+      this.inc++;
+    },
+    tock:function()
+    {
+      if(this.inc%this.pulse==0)
+      {
+        this.next();
+      }
+    },
+    next:function()
+    {
+      var b = document.createElement("a-box");
+      b .setAttribute("material", {color: "#E87359"});
+      b .setAttribute("position",
+        xzseedy(
+          /*y:*/Math.pow(this.inc/this.pulse,.5)/2 - 1,
+          /*number:*/((this.inc/this.pulse) + 2),
+          /*scale*/1,
+          /*power*/2/3,
+          ///*growth*/.0625
+        ));
+      b .setAttribute("scale", {x:1,y:1,z:1});
+      this.el.appendChild(b);
+    },
+  }
+],
+[
+  'shift-space-wasd',
+  {
+    schema:{},
+    init:function(){
+      console.log(this);
+      this.y = {
+        velocity: 0,
+        acceleration: 0,
+      };
+      this.z = {
+        
+      }
+      this.listeners = {
+        keydown: this.onKeyDown.bind(this),
+        keyup: this.onKeyUp.bind(this),
+        blur: this.onBlur.bind(this)
+      };
+  
+      window.addEventListener('keydown', this.listeners.keydown, false);
+      window.addEventListener('keyup', this.listeners.keyup, false);
+      window.addEventListener('blur', this.listeners.blur, false);
+    },
+    update:function(){
+      
+    },
+    remove:function(){
+      window.removeEventListener('keydown', this.listeners.keydown);
+      window.removeEventListener('keyup', this.listeners.keyup);
+      window.removeEventListener('blur', this.listeners.blur);
+    },
+    tick:function(){
+      this.el.object3D.position.y += this.y.velocity/100.0;
+    },
+    tock:function(){
+      switch(this.y.acceleration){
+      case 1:
+        if(this.y.velocity < camera.maxVelocity)this.y.velocity+=0.1;
+        break;
+      case -1:
+        if(this.y.velocity > -camera.maxVelocity)this.y.velocity-=0.1;
+        break;
+      default:
+        if(this.y.velocity>0)this.y.velocity-=0.1;
+        else if(this.y.velocity<0)this.y.velocity+=0.1;
+        if(this.y.velocity<1&&this.y.velocity>-1)this.y.velocity = 0;
+      }
+    },
+    onKeyDown:function(e){
+       
+      if(e.code === "Space"&&e.code === "ShiftLeft"){
+        this.y.acceleration = 0;
+      }
+      else if(e.code === "Space"){
+        this.y.acceleration = 1;
+      }
+      else if(e.code === "ShiftLeft"){
+        this.y.acceleration = -1;
+      }
+    },
+    onKeyUp:function(e){
+        this.y.acceleration = 0;
+    },
+    onBlur:function(e){
+        this.y.acceleration = 0;
+    },
+  }
+],
+]);
+
+</script>
+</head>
+<body>
+<button onclick="start()">Start</button>
+<script>"use strict";
+function start(){
+document.body.removeChild(document.getElementsByTagName("button")[0]);
+document.body.insertAdjacentHTML("beforeend",'\
+<a-scene background="color: #222" filesystem log="Scene starting!">\n\
+  <a-assets id="assets">\n\
+   <img id="image" crossorigin=""/>\n\
+  </a-assets>\n\
+  <!--a-sky src="#default" radius="10"></a-sky-->\n\
+  <a-box position="0 0 0" scale="1 1 1" color="red"></a-box>\n\
+  <canvas class="a-canvas a-grab-cursor" data-aframe-canvas="true"></canvas>\n\
+  <a-camera shift-space-wasd="" look-controls="" wasd-controls="" position="0 1.6 0">\n\
+    <a-cursor\n\
+      id="cursor"\n\
+      color="white"\n\
+      animation__click="property: scale; from: 0.1 0.1 0.1; to: 1 1 1; easing: easeInCubic; dur: 150; startEvents: click"\n\
+      animation__clickreset="property: scale; to: 0.1 0.1 0.1; dur: 1; startEvents: animationcomplete__click"\n\
+      animation__fusing="property: scale; from: 1 1 1; to: 0.1 0.1 0.1; easing: easeInCubic; dur: 150; startEvents: fusing"></a-cursor>\n\
+  </a-camera>\n\
+</a-scene>\n\
+');
+}
+</script>
+<script>
+"use strict";
+
+
+//var image = new Image();
+//var sky = document . getElementById("image-360");
+//image .setAttribute("id","city");
+//image .setAttribute("src", "city.jpg");
+//document.getElementById("assets").appendChild(image);
+//image.decode()
+//     .then(function (){
+//	sky.setAttribute("src","#city");})
+//     .catch(function(e){"I quit";})
+//;
+//load("city.jpg",((a)=>{return (response)=>{
+//};})({image:image,sky:sky}));
+</script>
+</body>
+</html>
