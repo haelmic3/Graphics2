@@ -49,3 +49,12 @@ Clicking the Start button launches the a-frame application.
 A prompt loading screen clears way for a scene.
 
 If the VR headset is set up clicking the googles icon in the bottom right corner should connect the application.
+
+### Camera controls
+
+Onboard headset tracking **should** work automaticaly.  
+In addition wasd will control camera movement along the x and z axis,
+shift and space will control camera movement along the y axis.
+Click and draging the mouse pan left right and up down.
+There is no current z tilt adjustment or calibration apart from any input the headset may provide.
+With this it's somewhat posible to navagate with and without a headset.
