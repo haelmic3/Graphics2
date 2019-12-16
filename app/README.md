@@ -2,9 +2,6 @@
 
 Author: Michael Moran
 
-Be advised this application is not finished yet
-===============================================
-
 ## The files
 
 Included is the following
@@ -58,3 +55,23 @@ shift and space will control camera movement along the y axis.
 Click and draging the mouse pan left right and up down.
 There is no current z tilt adjustment or calibration apart from any input the headset may provide.
 With this it's somewhat posible to navagate with and without a headset.
+
+
+# Declearation of sources and methods
+
+ favicon.ico
+ Entirely my own and no help other then the program it was created with licensed in a way no credit other than anything embeded in the file which to my knowlege no such branding is present.
+ 
+	file.manager.js
+ Written by me with no other asstance other then the documentation from http://developer.mozilla.org
+ 
+	file.worker.js 
+ Written by me with no other asstance other then the documentation from http://developer.mozilla.org
+ 
+	index.html
+Written by me linking to a library provided by https://aframe.io/
+
+Documentation I used to write the application can be found at https://aframe.io/docs/0.9.0/
+
+node.js
+Written by me with documentation assistance from https://nodejs.org/ no other sources used.
